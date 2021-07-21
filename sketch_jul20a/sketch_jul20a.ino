@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
 
-SoftwareSerial bluetooth(2, 3);
+SoftwareSerial bluetooth(A0, A1); // RXD > Hold, TXD > Abort, GND > GND, VCC > 5V
 float phoneYaw, phonePitch, phoneRoll;
 float currentPYR [3] = {0, 0, 0};
 float DCM [3][3], EulerPYR [3], rotPYR [3], stepPYR [3];
