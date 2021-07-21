@@ -12,18 +12,9 @@ void setup() {
 
 void loop() {
   if (bluetooth.available() > 0) {
-    int PYR = bluetooth.read();
-    //Serial.write(PYR); }}
-    String strPYR = String(PYR);
-    int space1 = strPYR.indexOf(' ', 0);
-    int space2 = strPYR.indexOf(' ', space1+1);
-    int endline = strPYR.indexOf('\n', 0);
-    String strPitch = strPYR.substring(0, space1-1);
-    String strYaw = strPYR.substring(space1+1, space2-1);
-    String strRoll = strPYR.substring(space2+1, endline-1);
-    phonePitch = strPitch.toFloat();
-    phoneYaw = strYaw.toFloat();
-    phoneRoll = strRoll.toFloat();
+    phonePitch = bluetooth.parseFloat();
+    phoneYaw = bluetooth.parseFloat();
+    phoneRoll = bluetooth.parseFloat();
     Serial.print("Pitch: ");
     Serial.print(phonePitch);
     Serial.print('\t');
@@ -36,6 +27,7 @@ void loop() {
     DCM_to_EulerPYR(DCM, EulerPYR);
     for (int i = 0; i < 3; i++) {
       rotPYR[i] = EulerPYR[i] - currentPYR[i];
+      Serial.println(rotPYR[i]);
       stepPYR[i] = rotPYR[i]/1.8;
       currentPYR[i] = stepPYR[i]*1.8;
     }
