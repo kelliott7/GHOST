@@ -74,7 +74,7 @@ void loop() {
      currentPYR[i] += stepPYR[i]*1.8;
     }
     steppers.moveTo((long)stepPYR);
-    //steppers.runSpeedToPosition();
+    steppers.runSpeedToPosition();
     
   }
 }
