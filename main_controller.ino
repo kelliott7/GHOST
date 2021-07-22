@@ -7,7 +7,7 @@
 /*
    main_controller.ino
    //// CONTRIBUTORS ////
-   Katie jeeeeean Elliott
+   Katie Elliott
    katherine.elliott@hilltechnicalsolutions.com
    Evan Baker
    evan.baker@hilltechnicalsolutions.com
