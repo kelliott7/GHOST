@@ -71,7 +71,7 @@ void loop() {
      rotPYR[i] = EulerPYR[i] - currentPYR[i];
      Serial.println(stepPYR[i]);
      stepPYR[i] = rotPYR[i]/1.8;
-     currentPYR[i] = currentPYR[i];
+     currentPYR[i] = EulerPYR[i];
     }
     steppers.moveTo((long)stepPYR);
     steppers.runSpeedToPosition();
