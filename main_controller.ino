@@ -143,7 +143,7 @@ char input = bluetooth.read();
 }
 
 
-void EulerYPR_to_DCM(  float phoneYaw,   float phonePitch,   float phoneRoll,   float DCM [3][3]) {
+void EulerYPR_to_DCM(float phoneYaw, float phonePitch, float phoneRoll, float DCM [3][3]) {
   float phoneRoll_rad = phoneRoll * PI / 180;
   float phonePitch_rad = phonePitch * PI / 180;
   float phoneYaw_rad = phoneYaw * PI / 180;
