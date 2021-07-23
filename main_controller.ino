@@ -33,6 +33,7 @@ SoftwareSerial bluetooth(A0, A1); // RXD > Hold, TXD > Abort, GND > GND, VCC > 5
   float phoneYaw, phonePitch, phoneRoll;
   float currentPYR [3] = {0, 0, 0};
   float DCM [3][3], EulerPYR [3], rotPYR [3], stepPYR [3];
+  boolean runLoop;
 
 void setup() {
 
@@ -64,9 +65,10 @@ void loop() {
   if (bluetooth.available() > 0) {
     //Serial.println(bluetooth.read());
     //Serial.println(bluetooth.available());
-    phonePitch = 0;
-    phoneYaw = 0;
-    phoneRoll = 0;
+    //phonePitch = 0;
+    //phoneYaw = 0;
+    //phoneRoll = 0;
+    runLoop = 1;
     bluePhone();
     
     EulerYPR_to_DCM(phoneYaw, phonePitch, phoneRoll, DCM);
@@ -115,7 +117,8 @@ void bluePhone() {
   */
 char input = bluetooth.read();
 
-  if (phonePitch == 0 || phoneYaw == 0 || phoneRoll == 0) {
+//if (phonePitch == 0 || phoneYaw == 0 || phoneRoll == 0) {
+   while (runLoop == 1) {
     switch (input)
     {
       case 'P': phonePitchRaw = bluetooth.parseFloat(); //break;
@@ -127,9 +130,11 @@ char input = bluetooth.read();
         Serial.print(phoneYawRaw);
         Serial.print('\t');
         Serial.println(phoneRollRaw);
+        runLoop = 0;
         break;
 
       default: break;
+    //}
     }
   }
 
