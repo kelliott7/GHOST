@@ -115,10 +115,11 @@ void bluePhone() {
   Serial.print("Roll: ");
   Serial.println(phoneRoll);
   */
-char input = bluetooth.read();
 
 //if (phonePitch == 0 || phoneYaw == 0 || phoneRoll == 0) {
-   while (runLoop == 1) {
+   
+ while (runLoop == 1) {
+    char input = bluetooth.read();
     switch (input)
     {
       case 'P': phonePitchRaw = bluetooth.parseFloat(); //break;
