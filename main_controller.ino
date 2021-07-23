@@ -80,7 +80,7 @@ void loop() {
     
     //Serial.println((long)stepPYR[0]);
 
-    stepperX.moveTo((long)stepPYR[0]);
+    stepperX.moveTo((long)EulerPYR[0]);
     
     for (int j = 0; j < ((int)stepPYR[0]); j++) {
       stepperX.run();
@@ -97,9 +97,9 @@ void loop() {
  * Formats data from phone to be ready to print
  */
 void bluePhone() {
-  phonePitch = bluetooth.parseFloat();
-  phoneYaw = bluetooth.parseFloat();
-  phoneRoll = bluetooth.parseFloat();
+  //phonePitch = bluetooth.parseFloat();
+  //phoneYaw = bluetooth.parseFloat();
+  //phoneRoll = bluetooth.parseFloat();
   //phonePitch = 90;
   //phoneYaw = 0;
   //phoneRoll = 0;
