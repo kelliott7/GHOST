@@ -11,13 +11,11 @@
    katherine.elliott@hilltechnicalsolutions.com
    Evan Baker
    evan.baker@hilltechnicalsolutions.com
-
    Operates as the main brain of the table top TAMS
    project, "GHOST".  Reads orientational data from
    android app via bluetooth and performs matrix
    math to determine the commands to be send to the
    stepper motors.
-
    Developed in the Arduino IDE
 */
 
@@ -99,16 +97,13 @@ void loop() {
  * Formats data from phone to be ready to print
  */
 void bluePhone() {
-  /*
   phonePitch = bluetooth.parseFloat();
   phoneYaw = bluetooth.parseFloat();
   phoneRoll = bluetooth.parseFloat();
-  //float weight = 0.1;
-  //phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
   //phonePitch = 90;
   //phoneYaw = 0;
   //phoneRoll = 0;
- 
+  /*
   Serial.print("Pitch: ");
   Serial.print(phonePitch);
   Serial.print('\t');
@@ -123,23 +118,26 @@ char input = bluetooth.read();
   if (phonePitch == 0 || phoneYaw == 0 || phoneRoll == 0) {
     switch (input)
     {
-      case 'P': phonePitch = bluetooth.parseFloat(); //break;
-      case 'Y': phoneYaw = bluetooth.parseFloat(); //break;
-      case 'R': phoneRoll = bluetooth.parseFloat();
+      case 'P': phonePitchRaw = bluetooth.parseFloat(); //break;
+      case 'Y': phoneYawRaw = bluetooth.parseFloat(); //break;
+      case 'R': phoneRollRaw = bluetooth.parseFloat();
         Serial.print("PYR:\t");
-        Serial.print(phonePitch);
+        Serial.print(phonePitchRaw);
         Serial.print('\t');
-        Serial.print(phoneYaw);
+        Serial.print(phoneYawRaw);
         Serial.print('\t');
-        Serial.println(phoneRoll);
+        Serial.println(phoneRollRaw);
         break;
 
       default: break;
     }
   }
 
-  //float weight = 0.01;
-  //phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
+  float weight = 0.1;
+  phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
+  phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
+  phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
+ 
 }
 
 
