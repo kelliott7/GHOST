@@ -80,7 +80,7 @@ void loop() {
     
     //Serial.println((long)stepPYR[0]);
 
-    stepperX.moveTo((long)EulerPYR[0]);
+    stepperX.moveTo((long)EulerPYR[0]/1.8);
     
     for (int j = 0; j < ((int)stepPYR[0]); j++) {
       stepperX.run();
