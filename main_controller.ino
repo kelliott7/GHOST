@@ -30,7 +30,7 @@ const byte enablePin = 8;  // ***** pin 8 is the enable pin
 //BLUETOOTH SERIAL SETUP
 SoftwareSerial bluetooth(A0, A1); // RXD > Hold, TXD > Abort, GND > GND, VCC > 5V
   float phoneYawRaw, phonePitchRaw, phoneRollRaw;
-  float phoneYaw, phonePitch, phoneRoll;
+  float phoneYaw = 0, phonePitch = 0, phoneRoll = 0;
   float currentPYR [3] = {0, 0, 0};
   float DCM [3][3], EulerPYR [3], rotPYR [3], stepPYR [3];
   boolean runLoop;
