@@ -138,7 +138,7 @@ char input = bluetooth.read();
     }
   }
 
-  float weight = 0.1;
+  float weight = 0.9;
   phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
   phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
   phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
