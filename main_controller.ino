@@ -139,7 +139,7 @@ void bluePhone() {
     }
   }
 
-  float weight = 0.9;
+  float weight = 0.99;
   phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
   phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
   phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
