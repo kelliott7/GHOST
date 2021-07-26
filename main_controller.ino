@@ -45,11 +45,11 @@ void setup() {
   stepperX.setMaxSpeed(200.0);
   stepperX.setAcceleration(75);
 
-  stepperY.setMaxSpeed(100.0);
-  stepperY.setAcceleration(50);
+  stepperY.setMaxSpeed(200.0);
+  stepperY.setAcceleration(75);
 
-  stepperZ.setMaxSpeed(100.0);
-  stepperZ.setAcceleration(50);
+  stepperZ.setMaxSpeed(200.0);
+  stepperZ.setAcceleration(75);
 
   steppers.addStepper(stepperX);
   steppers.addStepper(stepperY);
@@ -83,9 +83,22 @@ void loop() {
     //Serial.println((long)stepPYR[0]);
 
     stepperX.moveTo((long)EulerPYR[0]/1.8);
+    stepperY.moveTo((long)EulerPYR[1]/1.8);
+    stepperZ.moveTo((long)EulerPYR[2]/1.8);
+
     
     for (int j = 0; j < ((int)stepPYR[0]); j++) {
       stepperX.run();
+      Serial.println();
+    }
+    
+    for (int j = 0; j < ((int)stepPYR[2]); j++) {
+      stepperY.run();
+      Serial.println();
+    }
+    
+    for (int j = 0; j < ((int)stepPYR[2]); j++) {
+      stepperZ.run();
       Serial.println();
     }
      
