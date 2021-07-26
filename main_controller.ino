@@ -31,8 +31,9 @@ const byte enablePin = 8;  // ***** pin 8 is the enable pin
 SoftwareSerial bluetooth(A0, A1); // RXD > Hold, TXD > Abort, GND > GND, VCC > 5V
   float phoneYawRaw, phonePitchRaw, phoneRollRaw;
   float phoneYaw = 0, phonePitch = 0, phoneRoll = 0;
-  float currentPYR [3] = {0, 0, 0};
   float DCM [3][3], EulerPYR [3], rotPYR [3], stepPYR [3];
+  float currentPYR [3] = {0, 0, 0};
+
   boolean runLoop;
 
 void setup() {
@@ -42,12 +43,15 @@ void setup() {
   bluetooth.begin(9600); 
   
   //MOTOR SETUP 2
+  stepperX.setCurrentPosition(0);
   stepperX.setMaxSpeed(200.0);
   stepperX.setAcceleration(75);
 
+  stepperY.setCurrentPosition(0);
   stepperY.setMaxSpeed(200.0);
   stepperY.setAcceleration(75);
-
+  
+  stepperZ.setCurrentPosition(0);
   stepperZ.setMaxSpeed(200.0);
   stepperZ.setAcceleration(75);
 
@@ -62,6 +66,7 @@ void setup() {
 }
 
 void loop() {
+
   if (bluetooth.available() > 0) {
     //Serial.println(bluetooth.read());
     //Serial.println(bluetooth.available());
@@ -77,7 +82,7 @@ void loop() {
     for (int i = 0; i < 3; i++) {
      rotPYR[i] = EulerPYR[i] - currentPYR[i];
      stepPYR[i] = rotPYR[i]/1.8;
-     currentPYR[i] = EulerPYR[i]; 
+     //currentPYR[i] = EulerPYR[i]; 
     }
     
     //Serial.println((long)stepPYR[0]);
@@ -87,12 +92,11 @@ void loop() {
     stepperZ.moveTo((long)EulerPYR[2]/1.8);
 
     
-    for (int j = 0; j < ((int)stepPYR[0]); j++) {
-      stepperX.run();
-      Serial.println();
+    for (int j = 0; j < 25; j++) {
+      steppers.run();
     }
-    
-    for (int j = 0; j < ((int)stepPYR[2]); j++) {
+    /*
+    for (int j = 0; j < ((int)stepPYR[1]); j++) {
       stepperY.run();
       Serial.println();
     }
@@ -101,10 +105,13 @@ void loop() {
       stepperZ.run();
       Serial.println();
     }
-     
+     */
     //steppers.moveTo((long)stepPYR);
     //steppers.runToPosition();
     //delay(10);
+    currentPYR[0] = stepperX.currentPosition();
+    currentPYR[1] = stepperY.currentPosition();
+    currentPYR[2] = stepperZ.currentPosition();
   }
 }
 
@@ -137,6 +144,9 @@ void bluePhone() {
     {
       case 'P': phonePitchRaw = bluetooth.parseFloat(); //break;
       case 'Y': phoneYawRaw = bluetooth.parseFloat(); //break;
+        if (phoneYawRaw > 180) {
+          phoneYawRaw = phoneYawRaw - 360;
+        }
       case 'R': phoneRollRaw = bluetooth.parseFloat();
         Serial.print("PYR:\t");
         Serial.print(phonePitchRaw);
