@@ -51,10 +51,28 @@ void loop() {
   if (bluetooth.available() > 0) {
     char nextChar = ' ';
     String bluetoothString = "";
-    while (nextChar != '/n') {
-      nextChar = bluetooth.read();
-      bluetoothString += nextChar;
+    while (nextChar != '\n') {
+      if (bluetooth.available()) {
+        nextChar = bluetooth.read();
+        bluetoothString.concat((String)nextChar);
+      }
     }
-    Serial.println(bluetoothString);
+    Serial.print(bluetoothString);
+    int indP = bluetoothString.indexOf('P');
+    int indY = bluetoothString.indexOf('Y');
+    int indR = bluetoothString.indexOf('R');
+    String phonePitchStr = bluetoothString.substring((indP+1), (indY-2));
+    String phoneYawStr = bluetoothString.substring((indY+1), (indR-2));
+    String phoneRollStr = bluetoothString.substring((indR+1), bluetoothString.length()-2);
+    phonePitch = phonePitchStr.toFloat();
+    phoneYaw = phoneYawStr.toFloat();
+    phoneRoll = phoneRollStr.toFloat();
+    Serial.print('P');
+    Serial.print(phonePitch);
+    Serial.print(" Y");
+    Serial.print(phoneYaw);
+    Serial.print(" R");
+    Serial.println(phoneRoll);
+    
   }
 }
