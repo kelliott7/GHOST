@@ -17,7 +17,7 @@ float phoneYaw = 0, phonePitch = 0, phoneRoll = 0;
 
 void setup() {
   Serial.begin(9600); //Adjust Serial monitor to this when testing
-  bluetooth.begin(9600); 
+  bluetooth.begin(9600);
   stepperX.setCurrentPosition(0);
   stepperX.setMaxSpeed(200.0);
   stepperX.setAcceleration(75);
@@ -36,69 +36,79 @@ void setup() {
 
   pinMode(enablePin, OUTPUT); // **** set the enable pin to output
   digitalWrite(enablePin, LOW); // *** set the enable pin low
-  
+
 }
 
 void loop() {
   if (bluetooth.available() > 0) {
-    stepperX.setCurrentPosition((long)phonePitch/1.8);
-    stepperY.setCurrentPosition((long)phoneYaw/1.8);
-    stepperZ.setCurrentPosition((long)phoneRoll/1.8);
+    //stepperX.setCurrentPosition((long)phonePitch / 1.8);
+    //stepperY.setCurrentPosition((long)phoneYaw / 1.8);
+    //stepperZ.setCurrentPosition((long)phoneRoll / 1.8);
 
-    runLoop = 1;
-  while (runLoop == 1) {
-    char input = bluetooth.read();
-    switch (input)
-    {
-      case 'P': phonePitchRaw = bluetooth.parseFloat(); //break;
-      case 'Y': phoneYawRaw = bluetooth.parseFloat(); //break;
-        if (phoneYawRaw > 180) {
-          phoneYawRaw = phoneYawRaw - 360;
-        }
-      case 'R': phoneRollRaw = bluetooth.parseFloat();
-        Serial.print("PYR:\t");
-        Serial.print(phonePitchRaw);
-        Serial.print('\t');
-        Serial.print(phoneYawRaw);
-        Serial.print('\t');
-        Serial.println(phoneRollRaw);
-        runLoop = 0;
-        break;
-
-      default: break;
+    char nextChar = ' ';
+    String bluetoothString = "";
+    while (nextChar != '\n') {
+      if (bluetooth.available()) {
+        nextChar = bluetooth.read();
+        bluetoothString.concat((String)nextChar);
+      }
     }
-  }
-  if (abs(phonePitchRaw - phonePitch) > 90){
-    phonePitchRaw = phonePitch;
-  }
-  if (abs(phoneYawRaw   - phoneYaw)   > 90){
-    phoneYawRaw = phoneYaw;
-  }
-  if (abs(phoneRollRaw   - phoneRoll)   > 90){
-    phoneRollRaw = phoneRoll;
-  }
-    
-  
-  float weight = 0.90;
-  phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
-  phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
-  phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
- 
-  
- 
-  stepperX.moveTo((long)phonePitch/1.8);
-  stepperY.moveTo((long)phoneYaw/1.8);
-  stepperZ.moveTo((long)phoneRoll/1.8);
+    //Serial.print(bluetoothString);
+    int indP = bluetoothString.indexOf('P');
+    int indY = bluetoothString.indexOf('Y');
+    int indR = bluetoothString.indexOf('R');
+    String phonePitchStr = bluetoothString.substring((indP + 1), (indY - 1));
+    String phoneYawStr = bluetoothString.substring((indY + 1), (indR - 1));
+    String phoneRollStr = bluetoothString.substring((indR + 1), bluetoothString.length() - 1);
+    phonePitch = phonePitchStr.toFloat();
+    phoneYaw = phoneYawStr.toFloat();
+    phoneRoll = phoneRollStr.toFloat();
+    Serial.print('P');
+    Serial.print(phonePitch);
+    Serial.print(" Y");
+    Serial.print(phoneYaw);
+    Serial.print(" R");
+    Serial.println(phoneRoll);
 
-  //steppers.run();
 
-  while(stepperX.distanceToGo() != 0 || stepperY.distanceToGo() != 0 || stepperZ.distanceToGo() != 0) {
+
+    /*
+      if (abs(phonePitchRaw - phonePitch) > 90){
+      phonePitchRaw = phonePitch;
+      }
+      if (abs(phoneYawRaw   - phoneYaw)   > 90){
+      phoneYawRaw = phoneYaw;
+      }
+      if (abs(phoneRollRaw   - phoneRoll)   > 90){
+      phoneRollRaw = phoneRoll;
+      }
+    */
+    /*
+      float weight = 0.90;
+      phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
+      phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
+      phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
+    */
+
+
+    stepperX.moveTo((long)phonePitch / 1.8);
+    stepperY.moveTo((long)phoneYaw / 1.8);
+    stepperZ.moveTo((long)phoneRoll / 1.8);
+    Serial.println(stepperX.distanceToGo());
+    Serial.println(stepperY.distanceToGo());
+    Serial.println(stepperZ.distanceToGo());
+
+
+    steppers.runSpeedToPosition();
+
+    //while (stepperX.distanceToGo() != 0 || stepperY.distanceToGo() != 0 || stepperZ.distanceToGo() != 0) {
       //Serial.println(stepperX.distanceToGo());
-      steppers.run();
+      //steppers.run();
+    //}
   }
-  
 
   //delay(1000);
 
-  }
+
 }
+
