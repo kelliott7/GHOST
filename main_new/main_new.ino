@@ -1,38 +1,29 @@
 #include <SoftwareSerial.h>
-#include <AccelStepper.h>
-#include <MultiStepper.h>
-//#include <math.h>
+#include <FlexyStepper.h>
 
-AccelStepper stepperX(AccelStepper::DRIVER, 2, 5);
-AccelStepper stepperY(AccelStepper::DRIVER, 3, 6);
-AccelStepper stepperZ(AccelStepper::DRIVER, 4, 7);
+FlexyStepper stepperX;
+FlexyStepper stepperY;
+FlexyStepper stepperZ;
 
-MultiStepper steppers;
+const int STEPPER_SPEED = 200;
+const int STEPPER_ACCEL = 100;
+
 SoftwareSerial bluetooth(A0, A1); // RXD > Hold, TXD > Abort, GND > GND, VCC > 5V
 
 const byte enablePin = 8;  // ***** pin 8 is the enable pin
 boolean runLoop;
 float phoneYawRaw, phonePitchRaw, phoneRollRaw;
 float phoneYaw = 0, phonePitch = 0, phoneRoll = 0;
+float DCM [3][3], EulerPYR [3], rotPYR [3], stepPYR [3];
+float oldPitch = 0, oldYaw = 0, oldRoll = 0;
 
 void setup() {
   Serial.begin(9600); //Adjust Serial monitor to this when testing
   bluetooth.begin(9600);
-  stepperX.setCurrentPosition(0);
-  stepperX.setMaxSpeed(200.0);
-  stepperX.setAcceleration(75);
-  steppers.addStepper(stepperX);
 
-  stepperY.setCurrentPosition(0);
-  stepperY.setMaxSpeed(200.0);
-  stepperY.setAcceleration(75);
-  steppers.addStepper(stepperY);
-
-  stepperZ.setCurrentPosition(0);
-  stepperZ.setMaxSpeed(200.0);
-  stepperZ.setAcceleration(75);
-  steppers.addStepper(stepperZ);
-
+  stepperX.connectToPins(2, 5);
+  stepperY.connectToPins(3, 6);
+  stepperZ.connectToPins(4, 7);
 
   pinMode(enablePin, OUTPUT); // **** set the enable pin to output
   digitalWrite(enablePin, LOW); // *** set the enable pin low
@@ -40,11 +31,17 @@ void setup() {
 }
 
 void loop() {
-  if (bluetooth.available() > 0) {
-    //stepperX.setCurrentPosition((long)phonePitch / 1.8);
-    //stepperY.setCurrentPosition((long)phoneYaw / 1.8);
-    //stepperZ.setCurrentPosition((long)phoneRoll / 1.8);
 
+  stepperX.setSpeedInStepsPerSecond(STEPPER_SPEED);
+  stepperX.setAccelerationInStepsPerSecondPerSecond(STEPPER_ACCEL);
+
+  stepperY.setSpeedInStepsPerSecond(STEPPER_SPEED);
+  stepperY.setAccelerationInStepsPerSecondPerSecond(STEPPER_ACCEL);
+
+  stepperZ.setSpeedInStepsPerSecond(STEPPER_SPEED);
+  stepperZ.setAccelerationInStepsPerSecondPerSecond(STEPPER_ACCEL);
+
+  if (bluetooth.available() > 0) {
     char nextChar = ' ';
     String bluetoothString = "";
     while (nextChar != '\n') {
@@ -62,6 +59,7 @@ void loop() {
     String phoneRollStr = bluetoothString.substring((indR + 1), bluetoothString.length() - 1);
     phonePitch = phonePitchStr.toFloat();
     phoneYaw = phoneYawStr.toFloat();
+
     phoneRoll = phoneRollStr.toFloat();
     Serial.print('P');
     Serial.print(phonePitch);
@@ -70,45 +68,62 @@ void loop() {
     Serial.print(" R");
     Serial.println(phoneRoll);
 
+    //EulerYPR_to_DCM(phoneYaw, phonePitch, phoneRoll, DCM);
+    //DCM_to_EulerPYR(DCM, EulerPYR);
 
+    if ((abs(oldPitch - phonePitch) < 15) &&  (abs(oldYaw - phoneYaw) < 15) && (abs(oldRoll - phoneRoll) < 15)) {
 
-    /*
-      if (abs(phonePitchRaw - phonePitch) > 90){
-      phonePitchRaw = phonePitch;
+      stepperX.setTargetPositionInSteps((long)phonePitch / 1.8);
+      stepperY.setTargetPositionInSteps((long)phoneYaw / 1.8);
+      stepperZ.setTargetPositionInSteps((long)phoneRoll / 1.8);
+
+      while ((!stepperX.motionComplete()) || (!stepperY.motionComplete()) || (!stepperY.motionComplete()))
+      {
+        stepperX.processMovement();
+        stepperY.processMovement();
+        stepperZ.processMovement();
       }
-      if (abs(phoneYawRaw   - phoneYaw)   > 90){
-      phoneYawRaw = phoneYaw;
-      }
-      if (abs(phoneRollRaw   - phoneRoll)   > 90){
-      phoneRollRaw = phoneRoll;
-      }
-    */
-    /*
-      float weight = 0.90;
-      phonePitch = (1.0-weight) * phonePitch + weight * phonePitchRaw;
-      phoneYaw = (1.0-weight) * phoneYaw + weight * phoneYawRaw;
-      phoneRoll = (1.0-weight) * phoneRoll + weight * phoneRollRaw;
-    */
+    }
+    oldPitch = phonePitch;
+    oldYaw = phoneYaw;
+    oldRoll = phoneRoll;
 
-
-    stepperX.moveTo((long)phonePitch / 1.8);
-    stepperY.moveTo((long)phoneYaw / 1.8);
-    stepperZ.moveTo((long)phoneRoll / 1.8);
-    Serial.println(stepperX.distanceToGo());
-    Serial.println(stepperY.distanceToGo());
-    Serial.println(stepperZ.distanceToGo());
-
-
-    steppers.runSpeedToPosition();
-
-    //while (stepperX.distanceToGo() != 0 || stepperY.distanceToGo() != 0 || stepperZ.distanceToGo() != 0) {
-      //Serial.println(stepperX.distanceToGo());
-      //steppers.run();
-    //}
   }
-
-  //delay(1000);
-
-
 }
 
+void EulerYPR_to_DCM(float phoneYaw, float phonePitch, float phoneRoll, float DCM [3][3]) {
+  float phoneRoll_rad = phoneRoll * PI / 180;
+  float phonePitch_rad = phonePitch * PI / 180;
+  float phoneYaw_rad = phoneYaw * PI / 180;
+  DCM[1][1] = cos(phonePitch_rad) * cos(phoneYaw_rad);
+  DCM[2][1] = cos(phonePitch_rad) * sin(phoneYaw_rad);
+  DCM[3][1] = -sin(phonePitch_rad);
+  DCM[1][2] = -cos(phoneRoll_rad) * sin(phoneYaw_rad) + sin(phoneRoll_rad) * sin(phonePitch_rad) * cos(phoneYaw_rad);
+  DCM[2][2] = cos(phoneRoll_rad) * cos(phoneYaw_rad) + sin(phoneRoll_rad) * sin(phonePitch_rad) * sin(phoneYaw_rad);
+  DCM[3][2] = sin(phoneRoll_rad) * cos(phonePitch_rad);
+  DCM[1][3] = sin(phoneRoll_rad) * sin(phoneYaw_rad) + cos(phoneRoll_rad) * sin(phonePitch_rad) * cos(phoneYaw_rad);
+  DCM[2][3] = -sin(phoneRoll_rad) * cos(phoneYaw_rad) + cos(phoneRoll_rad) * sin(phonePitch_rad) * sin(phoneYaw_rad);
+  DCM[3][3] = cos(phoneRoll_rad) * cos(phonePitch_rad);
+}
+
+void DCM_to_EulerPYR(float DCM[3][3], float EulerPYR [3]) {
+  float Pitch, Yaw, Roll;
+  if (DCM[2][1] < -0.99987) {
+    Yaw = -90;
+    Roll = 0;
+    Pitch = (atan2(DCM[1][3], DCM[3][3])) * 180 / PI;
+  }
+  else if (DCM[2][1] > 0.99987) {
+    Yaw = 90;
+    Roll = 0;
+    Pitch = (atan2(DCM[1][3], DCM[3][3])) * 180 / PI;
+  }
+  else {
+    Pitch = (atan2(-DCM[3][1], DCM[1][1])) * 180 / PI;
+    Yaw = (asin(DCM[2][1])) * 180 / PI;
+    Roll = (atan2(-DCM[2][3], DCM[2][2])) * 180 / PI;
+  }
+  EulerPYR[0] = Pitch;
+  EulerPYR[1] = Yaw;
+  EulerPYR[2] = Roll;
+}
