@@ -30,11 +30,13 @@
   - Sets speed and acceleration of each motor
   - Checks for bytes coming in over Bluetooth
   - Writes a full set of pitch, yaw, and roll angles to a string then stores values as floats
-  - Checks for bad dats coming in by comparing to previous data
+  - Checks for bad data coming in by comparing to previous data
   - Converts YPR angles to DCM
   - Converts DCM to PYR angles
   - Set the target position of each motor
   - Moves each motor to target position
   - Stores pitch, yaw, and roll angles to be compared to next data
 - EulerYPR_to_DCM()
+  - Converts angles coming into the phone to a directional cosine matrix
 - DCM_to_EulerPYR()
+  - Converts directional cosine matrix to the angles the motors need to move to
