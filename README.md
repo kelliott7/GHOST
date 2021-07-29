@@ -1,4 +1,4 @@
-### GHOST App
+## GHOST App
 #### To download the GHOST app
 1. Open this link: https://gallery.appinventor.mit.edu/?galleryid=b9d5481b-f452-4536-bab6-d944d49cb560
 2. At the top of the screen click "Build" then "App ( provide QR code for .apk )"
