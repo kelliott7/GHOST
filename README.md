@@ -23,8 +23,18 @@
 - Start the sketch over by clicking the rest button on the board itself
 #### Functions
 - setup()
-  - Initializes serial monitor and bluetooth communication
+  - Initializes serial monitor and Bluetooth communication
   - Connects stepper motors to the correct pins
   - Enables CNC shield
 - loop()
-  - 
+  - Sets speed and acceleration of each motor
+  - Checks for bytes coming in over Bluetooth
+  - Writes a full set of pitch, yaw, and roll angles to a string then stores values as floats
+  - Checks for bad dats coming in by comparing to previous data
+  - Converts YPR angles to DCM
+  - Converts DCM to PYR angles
+  - Set the target position of each motor
+  - Moves each motor to target position
+  - Stores pitch, yaw, and roll angles to be compared to next data
+- EulerYPR_to_DCM()
+- DCM_to_EulerPYR()
