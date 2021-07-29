@@ -1,4 +1,4 @@
-# GHOST
+# <center>GHOST</center>
 ## Gyroscopic Handheld Orientation Simulation Tool
 *A tabletop Three Axis Motion Simulator that takes input from the orientation of an Android device via Bluetooth communication. The center platform of the TAMS is moved by pitch, yaw, and roll motors to match the angular position of the phone.* 
 
