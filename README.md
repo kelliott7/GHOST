@@ -1,4 +1,5 @@
 # GHOST - Gyroscopic Handheld Orientation Simulation Tool
+
 ## GHOST App
 #### To download the GHOST app
 1. Open this link: https://gallery.appinventor.mit.edu/?galleryid=b9d5481b-f452-4536-bab6-d944d49cb560
@@ -14,3 +15,5 @@
   - Starts displaying angles and sending data over Bluetooth
 - Stop
   - Stops displaying angles and sending data over Bluetooth
+
+## mainGhost.ino Arduino Sketch
