@@ -17,4 +17,14 @@
   - Stops displaying angles and sending data over Bluetooth
 
 ## ghostMain.ino Arduino Sketch
-
+#### Running the sketch
+- Upload to Arduino Uno board by clicking the arrow
+- Sketch will immediately start running
+- Start the sketch over by clicking the rest button on the board itself
+#### Functions
+- setup()
+  - Initializes serial monitor and bluetooth communication
+  - Connects stepper motors to the correct pins
+  - Enables CNC shield
+- loop()
+  - 
