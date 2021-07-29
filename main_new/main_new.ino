@@ -68,14 +68,16 @@ void loop() {
     Serial.print(" R");
     Serial.println(phoneRoll);
 
-    //EulerYPR_to_DCM(phoneYaw, phonePitch, phoneRoll, DCM);
-    //DCM_to_EulerPYR(DCM, EulerPYR);
+    
 
     if ((abs(oldPitch - phonePitch) < 15) &&  (abs(oldYaw - phoneYaw) < 15) && (abs(oldRoll - phoneRoll) < 15)) {
 
-      stepperX.setTargetPositionInSteps((long)phonePitch / 1.8);
-      stepperY.setTargetPositionInSteps((long)phoneYaw / 1.8);
-      stepperZ.setTargetPositionInSteps((long)phoneRoll / 1.8);
+      EulerYPR_to_DCM(phoneYaw, phonePitch, phoneRoll, DCM);
+      DCM_to_EulerPYR(DCM, EulerPYR);
+    
+      stepperX.setTargetPositionInSteps((long)EulerPYR[0] / 1.8);
+      stepperY.setTargetPositionInSteps((long)EulerPYR[1] / 1.8);
+      stepperZ.setTargetPositionInSteps((long)EulerPYR[2] / 1.8);
 
       while ((!stepperX.motionComplete()) || (!stepperY.motionComplete()) || (!stepperY.motionComplete()))
       {
