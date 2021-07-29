@@ -40,3 +40,20 @@
   - Converts angles coming into the phone to a directional cosine matrix
 - DCM_to_EulerPYR()
   - Converts directional cosine matrix to the angles the motors need to move to
+
+## Wiring
+#### Motors
+- Pitch motor plugs in to X driver on CNC shield
+- Yaw motor plugs in to Y driver on CNC shield
+- Roll motor pkugs in to Z driver on CNC shield
+#### Bluetooth
+- Connect RXD on Bluetooth to Hold on CNC shield
+- Connect TXD on Bluetooth to Abort on CNC shield
+- Connect GND on Bluetooth to GND on CNC shield
+- Connect VCC on Bluetooth to 5V on CNC shield
+#### Power supply 
+- Plug in Arduino board using USB and wall plug
+- Connect red lead to positive wire
+- Connect black lead to negative wire
+- Plug in power supply and flip switch on back
+- Press output button to supply power to CNC shield
