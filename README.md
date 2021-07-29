@@ -1,7 +1,7 @@
 # GHOST - Gyroscopic Handheld Orientation Simulation Tool
 *A tabletop Three Axis Motion Simulator that takes input from the orientation of an Android device via Bluetooth communication. The center platform of the TAMS is moved by pitch, yaw, and roll motors to match the angular position of the phone.* 
 
-*This simulator was developed by Katie Elliott, Evan Baker, and Hannah Boulware of Hill Technical Solutions, with the lead of Brandon Dias and Richard Barrow, for demonstration at the Space and Missile Defense Symposium.*
+*This simulator was designed and developed by Katie Elliott, Evan Baker, and Hannah Boulware of Hill Technical Solutions, with the lead of Brandon Dias and Richard Barrow, for demonstration at the Space and Missile Defense Symposium.*
 
 
 ## GHOST App
