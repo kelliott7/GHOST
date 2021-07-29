@@ -16,4 +16,5 @@
 - Stop
   - Stops displaying angles and sending data over Bluetooth
 
-## mainGhost.ino Arduino Sketch
+## ghostMain.ino Arduino Sketch
+
